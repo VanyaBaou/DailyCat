@@ -50,9 +50,9 @@ export default async () => {
         );
     }
 
-    // Use the current Pacific Time date to deterministically select an image.
+    // Use the current Eastern Time date to deterministically select an image.
     const today = new Intl.DateTimeFormat("en-CA", {
-        timeZone: "America/Los_Angeles",
+        timeZone: "America/New_York",
         year: "numeric",
         month: "2-digit",
         day: "2-digit"
