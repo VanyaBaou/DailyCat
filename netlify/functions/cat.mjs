@@ -25,13 +25,10 @@ export default async () => {
         );
     }
 
-    const contentType =
-        response.headers.get("Content-Type") || "application/octet-stream";
-
     return new Response(response.body, {
         status: 200,
         headers: {
-            "Content-Type": contentType,
+            "Content-Type": "image/jpeg",
             "Cache-Control": "no-cache"
         }
     });
