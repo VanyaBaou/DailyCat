@@ -76,7 +76,7 @@ export default async () => {
         );
     }
 
-    // Determine MIME type from the file extension.
+    // Determine MIME type from the actual file extension.
     const extension = selected.name
         .split(".")
         .pop()
@@ -103,6 +103,7 @@ export default async () => {
     });
 };
 
+// Support both /cat and /cat.jpg.
 export const config = {
-    path: "/cat"
+    path: ["/cat", "/cat.jpg"]
 };
