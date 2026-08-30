@@ -118,5 +118,5 @@ export default async () => {
 
 // Make the function itself handle both URLs.
 export const config = {
-    path: ["/cat", "/cat.jpg"]
+    path: "/cat"
 };
