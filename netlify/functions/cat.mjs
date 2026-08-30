@@ -1,13 +1,14 @@
 export default async () => {
     const imageURL =
-        "https://raw.githubusercontent.com/VanyaBaou/DailyCat/main/cats/cat-0001.jpg";
+        "https://raw.githubusercontent.com/VanyaBaou/DailyCat/refs/heads/main/cats/cat-0001.jpg";
 
     const response = await fetch(imageURL);
 
     if (!response.ok) {
-        return new Response("Could not fetch cat image.", {
-            status: 502
-        });
+        return new Response(
+            `Could not fetch cat image. GitHub returned ${response.status}.`,
+            { status: 502 }
+        );
     }
 
     const contentType =
