@@ -1,0 +1,4 @@
+[[redirects]]
+	from = "/cat.jpg"
+	to = "/.netlify/functions/cat"
+	status = 200
