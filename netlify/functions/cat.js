@@ -38,7 +38,7 @@ export default async (req) => {
     const filename = cats[index];
 
     const imageURL =
-        `https://raw.githubusercontent.com/VanyaBaou/DailyCat/refs/heads/main/cats/${encodeURIComponent(filename)}`;
+		`https://raw.githubusercontent.com/VanyaBaou/DailyCat/main/cats/${encodeURIComponent(filename)}`;
 
     const response = await fetch(imageURL);
 
