@@ -56,7 +56,7 @@ export default async () => {
     const index = Math.abs(hash) % images.length;
     const selected = images[index];
 
-    // Fetch the selected image directly through the GitHub API.
+    // Fetch the selected image through the GitHub API.
     const imageURL =
         `https://api.github.com/repos/${owner}/${repo}/contents/${folder}/${encodeURIComponent(selected.name)}?ref=${branch}`;
 
@@ -76,7 +76,7 @@ export default async () => {
         );
     }
 
-    // Determine MIME type from the actual file extension.
+    // Determine MIME type from the file extension.
     const extension = selected.name
         .split(".")
         .pop()
@@ -98,12 +98,16 @@ export default async () => {
         status: 200,
         headers: {
             "Content-Type": contentType,
+
+            // Allow the image to be used from Discord/BetterDiscord.
+            "Access-Control-Allow-Origin": "*",
+
+            // Don't let an intermediary cache yesterday's cat.
             "Cache-Control": "no-cache"
         }
     });
 };
 
-// Support both /cat and /cat.jpg.
 export const config = {
     path: ["/cat", "/cat.jpg"]
 };
