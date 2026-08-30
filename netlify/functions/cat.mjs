@@ -4,7 +4,7 @@ export default async () => {
     const branch = "main";
     const folder = "cats";
 
-    // Ask GitHub for the contents of the cats/ folder.
+    // Get all files in the cats/ folder.
     const githubURL =
         `https://api.github.com/repos/${owner}/${repo}/contents/${folder}?ref=${branch}`;
 
@@ -28,7 +28,7 @@ export default async () => {
 
     const files = await response.json();
 
-    // Only allow actual image files.
+    // Only use supported image files.
     const images = files
         .filter(file => file.type === "file")
         .filter(file =>
@@ -43,7 +43,7 @@ export default async () => {
         );
     }
 
-    // Use today's date as a deterministic seed.
+    // Use today's UTC date to deterministically select an image.
     const today = new Date().toISOString().slice(0, 10);
 
     let hash = 0;
@@ -56,10 +56,15 @@ export default async () => {
     const index = Math.abs(hash) % images.length;
     const selected = images[index];
 
-    // Fetch the actual image using its GitHub API download URL.
-    const imageResponse = await fetch(selected.download_url, {
+    // Fetch the selected image directly through the GitHub API.
+    const imageURL =
+        `https://api.github.com/repos/${owner}/${repo}/contents/${folder}/${encodeURIComponent(selected.name)}?ref=${branch}`;
+
+    const imageResponse = await fetch(imageURL, {
         headers: {
             "Authorization": `Bearer ${process.env.GITHUB_TOKEN}`,
+            "Accept": "application/vnd.github.raw+json",
+            "X-GitHub-Api-Version": "2022-11-28",
             "User-Agent": "DailyCat-Netlify"
         }
     });
@@ -71,7 +76,7 @@ export default async () => {
         );
     }
 
-    // Determine the MIME type from the filename.
+    // Determine MIME type from the file extension.
     const extension = selected.name
         .split(".")
         .pop()
