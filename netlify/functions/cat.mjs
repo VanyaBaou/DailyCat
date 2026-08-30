@@ -18,17 +18,19 @@ export default async () => {
     });
 
     if (!response.ok) {
-        const error = await response.text();
-
         return new Response(
-            `GitHub returned ${response.status}: ${error}`,
-            { status: 502 }
+            `GitHub returned ${response.status}`,
+            {
+                status: 502,
+                headers: {
+                    "Content-Type": "text/plain; charset=utf-8"
+                }
+            }
         );
     }
 
     const files = await response.json();
 
-    // Only use supported image files.
     const images = files
         .filter(file => file.type === "file")
         .filter(file =>
@@ -39,7 +41,12 @@ export default async () => {
     if (images.length === 0) {
         return new Response(
             "No images found in the cats folder.",
-            { status: 404 }
+            {
+                status: 404,
+                headers: {
+                    "Content-Type": "text/plain; charset=utf-8"
+                }
+            }
         );
     }
 
@@ -56,7 +63,7 @@ export default async () => {
     const index = Math.abs(hash) % images.length;
     const selected = images[index];
 
-    // Fetch the selected image through the GitHub API.
+    // Fetch the selected image through GitHub's authenticated API.
     const imageURL =
         `https://api.github.com/repos/${owner}/${repo}/contents/${folder}/${encodeURIComponent(selected.name)}?ref=${branch}`;
 
@@ -72,11 +79,15 @@ export default async () => {
     if (!imageResponse.ok) {
         return new Response(
             `Could not fetch selected image: ${imageResponse.status}`,
-            { status: 502 }
+            {
+                status: 502,
+                headers: {
+                    "Content-Type": "text/plain; charset=utf-8"
+                }
+            }
         );
     }
 
-    // Determine MIME type from the file extension.
     const extension = selected.name
         .split(".")
         .pop()
@@ -98,16 +109,14 @@ export default async () => {
         status: 200,
         headers: {
             "Content-Type": contentType,
-
-            // Allow the image to be used from Discord/BetterDiscord.
+            "Content-Disposition": "inline",
             "Access-Control-Allow-Origin": "*",
-
-            // Don't let an intermediary cache yesterday's cat.
-            "Cache-Control": "no-cache"
+            "Cache-Control": "no-cache, no-store, must-revalidate"
         }
     });
 };
 
+// Make the function itself handle both URLs.
 export const config = {
     path: ["/cat", "/cat.jpg"]
 };
