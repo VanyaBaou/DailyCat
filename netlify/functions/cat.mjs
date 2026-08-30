@@ -50,8 +50,13 @@ export default async () => {
         );
     }
 
-    // Use today's UTC date to deterministically select an image.
-    const today = new Date().toISOString().slice(0, 10);
+    // Use the current Pacific Time date to deterministically select an image.
+    const today = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "America/Los_Angeles",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    }).format(new Date());
 
     let hash = 0;
 
@@ -116,7 +121,7 @@ export default async () => {
     });
 };
 
-// Make the function itself handle both URLs.
+// Function URL: /cat
 export const config = {
     path: "/cat"
 };
